@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gemini Trading Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "recharts": "https://aistudiocdn.com/recharts@^2.13.0",
+    "uuid": "https://aistudiocdn.com/uuid@^13.0.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^0.14.0",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0"
+  }
+}
+</script>
+    <style>
+        :root {
+            --background-start: #0F172A; /* slate-900 */
+            --background-end: #020617; /* slate-950 */
+            --surface-primary: #1E293B; /* slate-800 */
+            --surface-secondary: #334155; /* slate-700 */
+            --surface-tertiary: #475569; /* slate-600 */
+            --text-primary: #F1F5F9; /* slate-100 */
+            --text-secondary: #94A3B8; /* slate-400 */
+            --border-primary: #334155;
+            --accent-primary: #6366F1; /* indigo-500 */
+            --accent-hover: #4F46E5; /* indigo-600 */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-end);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /* A subtle, animated gradient with soft light sources for a dynamic feel */
+            background: 
+                linear-gradient(125deg, var(--background-start), var(--background-end) 45%),
+                radial-gradient(circle at top left, var(--accent-primary), transparent 30%),
+                radial-gradient(circle at bottom right, #4338ca, transparent 30%);
+            background-size: 200% 200%;
+            animation: move-gradient 20s ease-in-out infinite;
+        }
+
+        @keyframes move-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fade-in-scale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes scale-in-top {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes slide-in-from-top {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .animate-fade-in-scale {
+            animation: fade-in-scale 200ms ease-out;
+        }
+        .animate-scale-in-top {
+            animation: scale-in-top 150ms ease-out;
+        }
+        .animate-slide-in-from-top {
+            animation: slide-in-from-top 300ms ease-out forwards;
+        }
+        
+        /* Custom scrollbar for a better look */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: var(--surface-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+          background-color: var(--surface-tertiary);
+          border-radius: 10px;
+          border: 2px solid var(--surface-primary);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background-color: var(--accent-primary);
+        }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="toast-root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
