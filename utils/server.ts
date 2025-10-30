@@ -14,7 +14,7 @@ export const getCurrentUser = (): User | null => {
 };
 
 export const login = async (username: string, password: string): Promise<User> => {
-    await delay(1000);
+    await delay(400); // Reduced delay
     if (username === 'trader' && password === 'password') {
         const user: User = { id: 'user-123', username };
         localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
@@ -24,7 +24,7 @@ export const login = async (username: string, password: string): Promise<User> =
 };
 
 export const logout = async (): Promise<void> => {
-    await delay(200);
+    await delay(100); // Reduced delay
     localStorage.removeItem(USER_STORAGE_KEY);
 };
 
@@ -88,12 +88,12 @@ export const seedInitialData = () => {
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 export const getTrades = async (): Promise<Trade[]> => {
-  await delay(500);
+  await delay(200); // Reduced delay
   return [...getTradesFromStorage()];
 };
 
 export const addTrade = async (tradeData: Omit<Trade, 'id'>): Promise<Trade> => {
-  await delay(300);
+  await delay(150); // Reduced delay
   const currentTrades = getTradesFromStorage();
   const newTrade: Trade = { ...tradeData, id: generateId() };
   const updatedTrades = [newTrade, ...currentTrades];
@@ -102,7 +102,7 @@ export const addTrade = async (tradeData: Omit<Trade, 'id'>): Promise<Trade> => 
 };
 
 export const updateTrade = async (updatedTrade: Trade): Promise<Trade> => {
-    await delay(300);
+    await delay(150); // Reduced delay
     const currentTrades = getTradesFromStorage();
     const index = currentTrades.findIndex(t => t.id === updatedTrade.id);
     if (index === -1) {
@@ -114,13 +114,13 @@ export const updateTrade = async (updatedTrade: Trade): Promise<Trade> => {
 };
 
 export const deleteTrade = async (id: string): Promise<void> => {
-  await delay(300);
+  await delay(150); // Reduced delay
   const currentTrades = getTradesFromStorage();
   const updatedTrades = currentTrades.filter(t => t.id !== id);
   saveTradesToStorage(updatedTrades);
 };
 
 export const deleteAllTrades = async (): Promise<void> => {
-  await delay(500);
+  await delay(250); // Reduced delay
   saveTradesToStorage([]); // Replaces all trades with an empty array.
 };

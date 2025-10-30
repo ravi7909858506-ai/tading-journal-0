@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { SpinnerIcon, CandleChartIcon, UserIcon, LockIcon } from './icons';
+import { useToast } from '../contexts/ToastContext';
 
 const motivationalQuotes = [
   { quote: "The goal of a successful trader is to make the best trades. Money is secondary.", author: "Alexander Elder" },
@@ -9,7 +10,11 @@ const motivationalQuotes = [
   { quote: "The four most dangerous words in investing are: 'This time it's different.'", author: "Sir John Templeton" }
 ];
 
-export const Login: React.FC = () => {
+interface LoginProps {
+    onSwitchToSignUp: () => void;
+}
+
+export const Login: React.FC<LoginProps> = ({ onSwitchToSignUp }) => {
     const { login } = useAuth();
     const [username, setUsername] = useState('trader');
     const [password, setPassword] = useState('password');
@@ -33,7 +38,7 @@ export const Login: React.FC = () => {
             setIsLoading(false);
         }
     };
-
+    
     return (
         <div className="min-h-screen flex items-center justify-center font-sans p-4">
             <div className="w-full max-w-md p-8 space-y-8 bg-[var(--surface-primary)] rounded-xl shadow-2xl border border-[var(--border-primary)]">
@@ -109,6 +114,19 @@ export const Login: React.FC = () => {
                         </button>
                     </div>
                 </form>
+
+                <div className="text-center text-sm text-slate-400 pt-4">
+                    <p>
+                        Don't have an account?{' '}
+                        <button
+                            type="button"
+                            onClick={onSwitchToSignUp}
+                            className="font-medium text-indigo-400 hover:text-indigo-300 focus:outline-none focus:underline"
+                        >
+                            Sign up
+                        </button>
+                    </p>
+                </div>
             </div>
         </div>
     );

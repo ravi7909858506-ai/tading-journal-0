@@ -1,4 +1,5 @@
-import { Trade, TradeDirection } from '../types';
+import { Trade } from '../types';
+import { calculateNetPnl } from './brokerage';
 
 export interface AnalyticsSummary {
   totalTrades: number;
@@ -47,7 +48,8 @@ export const calculateAnalytics = (trades: Trade[]): AnalyticsSummary => {
   let largestLoss = 0;
 
   trades.forEach(trade => {
-    const pnl = (trade.direction === TradeDirection.Long ? trade.exitPrice - trade.entryPrice : trade.entryPrice - trade.exitPrice) * trade.size;
+    // Use Net PnL for all calculations to ensure consistency and accuracy.
+    const pnl = calculateNetPnl(trade);
     
     totalPnL += pnl;
 

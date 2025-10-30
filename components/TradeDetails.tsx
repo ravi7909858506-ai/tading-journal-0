@@ -19,7 +19,7 @@ export const TradeDetails: React.FC<TradeDetailsProps> = ({ trade }) => {
     : trade.entryPrice - trade.exitPrice) * trade.size;
   
   const brokerageInfo = calculateBrokerage(trade);
-  const netPnl = grossPnl - brokerageInfo.totalCharges;
+  const netPnl = calculateNetPnl(trade);
 
   const isProfit = netPnl >= 0;
   const netPnlColor = isProfit ? 'text-green-400' : 'text-red-400';

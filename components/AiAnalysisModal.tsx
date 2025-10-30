@@ -10,8 +10,6 @@ interface AiAnalysisModalProps {
   trades: Trade[];
 }
 
-// Gemini API key is handled by the environment variable `process.env.API_KEY`
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
 const model = 'gemini-2.5-pro'; // Using a more powerful model for analysis
 
 const systemInstruction = `You are a trading performance analyst reviewing a user's trade journal from the Indian market.
@@ -35,8 +33,14 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({ isOpen, onClos
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isAiEnabled = typeof process !== 'undefined' && process.env && !!process.env.API_KEY;
 
   const handleAnalyze = async () => {
+    if (!isAiEnabled) {
+        setError("AI features are disabled. Please configure the API_KEY environment variable.");
+        return;
+    }
+
     if (trades.length < 5) {
         setError("You need at least 5 trades to get a meaningful analysis.");
         return;
@@ -47,6 +51,7 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({ isOpen, onClos
     setAnalysis(null);
 
     try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
         const tradesForPrompt = trades.map(({ id, notes, ...rest }) => rest); // Remove fields not relevant for analysis
         const prompt = `Here is the trade data in JSON format. All monetary values are in INR (₹). Please provide a detailed analysis:\n\n${JSON.stringify(tradesForPrompt, null, 2)}`;
         
@@ -79,7 +84,13 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({ isOpen, onClos
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="AI Performance Analysis">
         <div className="flex flex-col text-white min-h-[300px]">
-            {!analysis && !isLoading && (
+            {!isAiEnabled ? (
+                 <div className="text-center flex flex-col items-center justify-center flex-grow">
+                    <p className="text-amber-400 bg-amber-900/30 p-3 rounded-md border border-amber-800">
+                        AI features are disabled. The API_KEY environment variable is not configured.
+                    </p>
+                </div>
+            ) : !analysis && !isLoading ? (
                 <div className="text-center flex flex-col items-center justify-center flex-grow">
                     <p className="text-slate-300 mb-4">Get an AI-powered analysis of your trading performance based on your logged trades.</p>
                     {error && <p className="text-red-400 mb-4">{error}</p>}
@@ -93,7 +104,7 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({ isOpen, onClos
                     </button>
                     {trades.length < 5 && <p className="text-xs text-slate-500 mt-2">Requires at least 5 trades.</p>}
                 </div>
-            )}
+            ) : null}
 
             {isLoading && (
                 <div className="flex flex-col items-center justify-center flex-grow">

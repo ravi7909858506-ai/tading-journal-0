@@ -48,14 +48,13 @@ export const Dashboard: React.FC<DashboardProps> = React.memo(({ trades }) => {
     <div className="bg-slate-900/70 backdrop-blur-sm rounded-xl shadow-2xl p-6 md:p-8 border border-[var(--border-primary)]">
         <h2 className="text-2xl font-bold text-white mb-6">Performance Dashboard</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <StatCard label="Total P&L (Gross)" value={formatCurrency(summary.totalPnL)} valueClassName={pnlColor} accentColor={pnlBorderColor} icon={PnlChartIcon} />
+            <StatCard label="Total P&L (Net)" value={formatCurrency(summary.totalPnL)} valueClassName={pnlColor} accentColor={pnlBorderColor} icon={PnlChartIcon} />
             <StatCard label="Total Trades" value={summary.totalTrades} accentColor="bg-indigo-500" icon={ChartIcon} />
             <StatCard label="Win Rate" value={`${summary.winRate.toFixed(2)}%`} valueClassName={winRateColor} accentColor={winRateBorderColor} icon={ChartIcon} />
             <StatCard label="Profit Factor" value={summary.profitFactor ? summary.profitFactor.toFixed(2) : 'N/A'} accentColor={summary.profitFactor && summary.profitFactor >= 1 ? 'bg-green-500' : 'bg-yellow-500'} icon={InfoIcon} />
             <StatCard label="Avg. Win" value={formatCurrency(summary.averageWin)} valueClassName="text-green-400" accentColor="bg-green-500" icon={PlusIcon} />
             <StatCard label="Avg. Loss" value={formatCurrency(summary.averageLoss * -1)} valueClassName="text-red-400" accentColor="bg-red-500" icon={PlusIcon} />
             <StatCard label="Largest Win" value={formatCurrency(summary.largestWin)} valueClassName="text-green-400" accentColor="bg-green-500" icon={PnlChartIcon} />
-            {/* Fix: Corrected typo from formatcurrency to formatCurrency. */}
             <StatCard label="Largest Loss" value={formatCurrency(summary.largestLoss * -1)} valueClassName="text-red-400" accentColor="bg-red-500" icon={PnlChartIcon} />
         </div>
     </div>

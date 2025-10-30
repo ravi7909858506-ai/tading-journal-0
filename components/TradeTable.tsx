@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Trade, TradeDirection } from '../types';
 import { EditIcon, TrashIcon, LongIcon, ShortIcon, ChartIcon, InfoIcon } from './icons';
 import { ChartModal } from './ChartModal';
+import { calculateNetPnl } from '../utils/brokerage';
 
 interface TradeTableProps {
   trades: Trade[];
@@ -12,13 +13,6 @@ interface TradeTableProps {
 
 export const TradeTable: React.FC<TradeTableProps> = React.memo(({ trades, onView, onEdit, onDelete }) => {
   const [tradeForChart, setTradeForChart] = useState<Trade | null>(null);
-
-  const getPnl = (trade: Trade) => {
-    const pnlPerUnit = trade.direction === TradeDirection.Long
-      ? trade.exitPrice - trade.entryPrice
-      : trade.entryPrice - trade.exitPrice;
-    return pnlPerUnit * trade.size;
-  };
 
   const handleOpenChart = (trade: Trade) => {
     setTradeForChart(trade);
@@ -46,14 +40,14 @@ export const TradeTable: React.FC<TradeTableProps> = React.memo(({ trades, onVie
               <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Date</th>
               <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Ticker</th>
               <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Direction</th>
-              <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">P&L</th>
+              <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Net P&L</th>
               <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Setup</th>
               <th scope="col" className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider min-w-[120px]">Actions</th>
             </tr>
           </thead>
           <tbody className="bg-slate-800/50 divide-y divide-[var(--border-primary)]">
             {trades.map((trade) => {
-              const pnl = getPnl(trade);
+              const pnl = calculateNetPnl(trade);
               const isProfit = pnl >= 0;
 
               return (

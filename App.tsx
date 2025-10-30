@@ -24,6 +24,7 @@ import { ManageJournalsModal } from './components/ManageJournalsModal';
 import { DeleteDataModal } from './components/DeleteDataModal';
 import { useToast } from './contexts/ToastContext';
 import { PlusIcon, UserIcon, ChevronDownIcon, AiIcon, PnlChartIcon, HelpIcon, FolderIcon, LogoutIcon, DownloadIcon, WarningIcon, CandleChartIcon } from './components/icons';
+import { CollapsibleSection } from './components/CollapsibleSection';
 
 
 const ChartContainer: React.FC<{ title: string, children: React.ReactNode }> = ({ title, children }) => (
@@ -49,7 +50,11 @@ const CustomPieTooltip = ({ active, payload }: any) => {
 
 const Visualizations: React.FC<{ trades: Trade[] }> = React.memo(({ trades }) => {
     if (trades.length === 0) {
-        return null;
+        return (
+            <div className="text-center py-10">
+                <p className="text-slate-400">No data available for visualization.</p>
+            </div>
+        );
     }
 
     const { directionData, winLossData, instrumentData } = useMemo(() => {
@@ -81,46 +86,43 @@ const Visualizations: React.FC<{ trades: Trade[] }> = React.memo(({ trades }) =>
     const COLORS = ['#818CF8', '#F87171', '#4ADE80', '#FBBF24', '#60A5FA'];
 
     return (
-        <div className="bg-slate-900/70 backdrop-blur-sm rounded-xl shadow-2xl p-6 md:p-8 border border-[var(--border-primary)]">
-            <h3 className="text-xl font-bold text-white mb-6">Visualizations (Based on Net P&L)</h3>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <ChartContainer title="Trade Direction">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={directionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" label={false} labelLine={false}>
-                      {directionData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip content={<CustomPieTooltip />} />
-                    <Legend wrapperStyle={{ fontSize: '14px', color: '#cbd5e1' }} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <ChartContainer title="Trade Direction">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={directionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" label={false} labelLine={false}>
+                  {directionData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                </Pie>
+                <Tooltip content={<CustomPieTooltip />} />
+                <Legend wrapperStyle={{ fontSize: '14px', color: '#cbd5e1' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartContainer>
 
-              <ChartContainer title="Win / Loss Ratio">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={winLossData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" label={false} labelLine={false}>
-                       <Cell fill="#4ADE80" />
-                       <Cell fill="#F87171" />
-                    </Pie>
-                    <Tooltip content={<CustomPieTooltip />} />
-                    <Legend wrapperStyle={{ fontSize: '14px', color: '#cbd5e1' }} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartContainer>
+          <ChartContainer title="Win / Loss Ratio">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={winLossData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" label={false} labelLine={false}>
+                   <Cell fill="#4ADE80" />
+                   <Cell fill="#F87171" />
+                </Pie>
+                <Tooltip content={<CustomPieTooltip />} />
+                <Legend wrapperStyle={{ fontSize: '14px', color: '#cbd5e1' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartContainer>
 
-              <ChartContainer title="By Instrument">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={instrumentData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" label={false} labelLine={false}>
-                      {instrumentData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                    </Pie>
-                    <Tooltip content={<CustomPieTooltip />} />
-                    <Legend wrapperStyle={{ fontSize: '14px', color: '#cbd5e1' }} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            </div>
+          <ChartContainer title="By Instrument">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={instrumentData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius="80%" fill="#8884d8" label={false} labelLine={false}>
+                  {instrumentData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                </Pie>
+                <Tooltip content={<CustomPieTooltip />} />
+                <Legend wrapperStyle={{ fontSize: '14px', color: '#cbd5e1' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartContainer>
         </div>
     );
 });
@@ -158,38 +160,39 @@ const MonthlyPerformance: React.FC<{ trades: Trade[] }> = React.memo(({ trades }
     };
 
     if (monthlyPerformance.length === 0) {
-        return null;
+        return (
+            <div className="text-center py-10">
+                <p className="text-slate-400">No monthly performance data available.</p>
+            </div>
+        );
     }
 
     return (
-        <div className="bg-slate-900/70 backdrop-blur-sm rounded-xl shadow-2xl p-6 md:p-8 border border-[var(--border-primary)]">
-            <h3 className="text-xl font-bold text-white mb-6">Monthly Performance</h3>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-[var(--border-primary)]">
-                <thead className="bg-[var(--surface-primary)]/50">
-                  <tr>
-                    <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Month</th>
-                    <th scope="col" className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">Total Trades</th>
-                    <th scope="col" className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">Win Rate (Net)</th>
-                    <th scope="col" className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">Net P&L</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-slate-800/50 divide-y divide-[var(--border-primary)]">
-                  {monthlyPerformance.map(perf => (
-                    <tr key={perf.month} className="hover:bg-slate-700/50 transition-colors duration-150">
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
-                        {new Date(perf.month + '-02').toLocaleString('default', { month: 'long', year: 'numeric' })}
-                      </td>
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-300 text-right">{perf.totalTrades}</td>
-                      <td className={`px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${perf.winRate >= 50 ? 'text-green-400' : 'text-red-400'}`}>{perf.winRate.toFixed(2)}%</td>
-                      <td className={`px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${perf.netPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {formatCurrency(perf.netPnl)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-[var(--border-primary)]">
+            <thead className="bg-[var(--surface-primary)]/50">
+              <tr>
+                <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Month</th>
+                <th scope="col" className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">Total Trades</th>
+                <th scope="col" className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">Win Rate (Net)</th>
+                <th scope="col" className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase tracking-wider">Net P&L</th>
+              </tr>
+            </thead>
+            <tbody className="bg-slate-800/50 divide-y divide-[var(--border-primary)]">
+              {monthlyPerformance.map(perf => (
+                <tr key={perf.month} className="hover:bg-slate-700/50 transition-colors duration-150">
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                    {new Date(perf.month + '-02').toLocaleString('default', { month: 'long', year: 'numeric' })}
+                  </td>
+                  <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-slate-300 text-right">{perf.totalTrades}</td>
+                  <td className={`px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${perf.winRate >= 50 ? 'text-green-400' : 'text-red-400'}`}>{perf.winRate.toFixed(2)}%</td>
+                  <td className={`px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-right ${perf.netPnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {formatCurrency(perf.netPnl)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
     );
 });
@@ -333,11 +336,12 @@ function App() {
     return <FullScreenLoader />;
   }
 
+  const isAiEnabled = typeof process !== 'undefined' && process.env && !!process.env.API_KEY;
   const menuItems = [
-    { label: 'AI Analysis', icon: AiIcon, action: () => setIsAiModalOpen(true) },
-    { label: 'P&L Chart', icon: PnlChartIcon, action: () => setIsPnlChartModalOpen(true) },
-    { label: 'Help Chatbot', icon: HelpIcon, action: () => setIsHelpModalOpen(true) },
-    { label: 'Manage Journals', icon: FolderIcon, action: () => setIsManageJournalsModalOpen(true) },
+    { label: 'AI Analysis', icon: AiIcon, action: () => setIsAiModalOpen(true), disabled: !isAiEnabled },
+    { label: 'P&L Chart', icon: PnlChartIcon, action: () => setIsPnlChartModalOpen(true), disabled: false },
+    { label: 'Help Chatbot', icon: HelpIcon, action: () => setIsHelpModalOpen(true), disabled: !isAiEnabled },
+    { label: 'Manage Journals', icon: FolderIcon, action: () => setIsManageJournalsModalOpen(true), disabled: false },
   ];
 
   return (
@@ -375,8 +379,10 @@ function App() {
                       {menuItems.map(item => (
                         <button
                           key={item.label}
-                          onClick={() => { item.action(); setIsUserMenuOpen(false); }}
-                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-200 rounded-md hover:bg-[var(--surface-secondary)] transition-colors duration-150"
+                          onClick={() => { if (!item.disabled) { item.action(); setIsUserMenuOpen(false); } }}
+                          disabled={item.disabled}
+                          title={item.disabled ? 'Feature disabled: API_KEY not configured.' : item.label}
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-200 rounded-md hover:bg-[var(--surface-secondary)] transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <item.icon className="h-4 w-4 text-slate-400" />
                           <span>{item.label}</span>
@@ -421,8 +427,12 @@ function App() {
             onDelete={handleDeleteTrade}
             onFilter={handleDateFilter}
           />
-          <Visualizations trades={filteredTrades} />
-          <MonthlyPerformance trades={filteredTrades} />
+          <CollapsibleSection title="Visualizations (Net P&L)">
+            <Visualizations trades={filteredTrades} />
+          </CollapsibleSection>
+          <CollapsibleSection title="Monthly Performance">
+            <MonthlyPerformance trades={filteredTrades} />
+          </CollapsibleSection>
         </main>
       </div>
 

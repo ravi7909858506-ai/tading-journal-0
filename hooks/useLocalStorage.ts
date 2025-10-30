@@ -22,16 +22,5 @@ export function useLocalStorage<T,>(key: string, initialValue: T): [T, React.Dis
     }
   };
 
-  useEffect(() => {
-    try {
-        const item = window.localStorage.getItem(key);
-        if (item) {
-            setStoredValue(JSON.parse(item));
-        }
-    } catch (error) {
-        console.error("Could not parse stored json.", error);
-    }
-  }, [key]);
-
   return [storedValue, setValue];
 }
