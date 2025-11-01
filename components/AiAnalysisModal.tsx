@@ -60,6 +60,7 @@ export const AiAnalysisModal: React.FC<AiAnalysisModalProps> = ({ isOpen, onClos
             contents: prompt,
             config: {
                 systemInstruction: systemInstruction,
+                thinkingConfig: { thinkingBudget: 32768 },
             }
         });
         
