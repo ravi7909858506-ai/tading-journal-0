@@ -19,14 +19,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Check if user is already logged in (e.g., from localStorage)
+        // Check if user is already logged in (e.g., from localStorage session)
         const checkLoggedInUser = () => {
             try {
                 const currentUser = api.getCurrentUser();
                 setUser(currentUser);
-                if (currentUser) {
-                    api.seedInitialData(); // Also seed here on app load for existing user
-                }
+                // Seeding is now handled on the backend during login, so no call needed here.
             } catch (err) {
                 console.error("Failed to get current user", err);
             } finally {
@@ -42,8 +40,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             const loggedInUser = await api.login(username, password);
             setUser(loggedInUser);
-            // After user is set, their ID is available via getCurrentUser in the API service
-            api.seedInitialData(); // Seed data for the new user if they have none.
+            // Seeding data is now handled on the backend upon login.
         } catch (err: any) {
             setError(err.message || "Login failed.");
             throw err; // Re-throw to be caught in the component
@@ -53,7 +50,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     const logout = async () => {
-        // No need to set loading for logout as it should be fast
         try {
             await api.logout();
             setUser(null);
