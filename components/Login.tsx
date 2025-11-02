@@ -16,8 +16,8 @@ interface LoginProps {
 
 export const Login: React.FC<LoginProps> = ({ onSwitchToSignUp }) => {
     const { login } = useAuth();
-    const [username, setUsername] = useState('trader');
-    const [password, setPassword] = useState('password');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
