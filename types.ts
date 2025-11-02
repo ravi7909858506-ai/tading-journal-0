@@ -52,6 +52,7 @@ export interface Trade {
   tradeCategory: TradeCategory;
   optionType?: OptionType;
   strikePrice?: number;
+  expiryDate?: string; // YYYY-MM-DD
   direction: TradeDirection;
   size: number;
   entryPrice: number;
@@ -65,4 +66,5 @@ export interface Trade {
 export interface User {
   id: string;
   username: string;
+  email?: string;
 }

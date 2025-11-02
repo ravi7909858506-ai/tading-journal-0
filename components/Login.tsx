@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { SpinnerIcon, CandleChartIcon, UserIcon, LockIcon } from './icons';
+import { SpinnerIcon, CandleChartIcon, UserIcon, LockIcon, EyeIcon, EyeOffIcon } from './icons';
 import { useToast } from '../contexts/ToastContext';
 
 const motivationalQuotes = [
@@ -20,6 +20,7 @@ export const Login: React.FC<LoginProps> = ({ onSwitchToSignUp }) => {
     const [password, setPassword] = useState('password');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const randomQuote = useMemo(() => {
         const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
@@ -82,14 +83,24 @@ export const Login: React.FC<LoginProps> = ({ onSwitchToSignUp }) => {
                                 <input
                                     id="password"
                                     name="password"
-                                    type="password"
+                                    type={isPasswordVisible ? 'text' : 'password'}
                                     autoComplete="current-password"
                                     required
-                                    className="appearance-none relative block w-full pl-10 pr-3 py-2.5 border border-[var(--border-primary)] bg-[var(--surface-secondary)] text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/70 focus:border-indigo-500 focus:z-10 sm:text-sm rounded-md"
+                                    className="appearance-none relative block w-full pl-10 pr-10 py-2.5 border border-[var(--border-primary)] bg-[var(--surface-secondary)] text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/70 focus:border-indigo-500 focus:z-10 sm:text-sm rounded-md"
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                                        className="text-slate-400 hover:text-slate-200 focus:outline-none"
+                                        aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                                    >
+                                        {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

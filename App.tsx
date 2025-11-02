@@ -216,6 +216,7 @@ function App() {
 
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const notifiedTradesRef = useRef<Set<string>>(new Set());
 
   const loadTrades = useCallback(async () => {
     setIsLoading(true);
@@ -244,6 +245,37 @@ function App() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Effect for checking upcoming trade expiries
+  useEffect(() => {
+    const NOTIFICATION_THRESHOLD_DAYS = 3;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    trades.forEach(trade => {
+        if (trade.expiryDate && !notifiedTradesRef.current.has(trade.id)) {
+            const [year, month, day] = trade.expiryDate.split('-').map(Number);
+            const expiryDate = new Date(year, month - 1, day);
+            expiryDate.setHours(0, 0, 0, 0);
+
+            if (expiryDate < today) return; // Skip past expiries
+
+            const timeDiff = expiryDate.getTime() - today.getTime();
+            const daysUntilExpiry = Math.round(timeDiff / (1000 * 3600 * 24));
+
+            if (daysUntilExpiry <= NOTIFICATION_THRESHOLD_DAYS) {
+                let message = '';
+                if (daysUntilExpiry === 0) {
+                    message = `Reminder: Trade for ${trade.ticker.toUpperCase()} expires today.`;
+                } else {
+                    message = `Reminder: Trade for ${trade.ticker.toUpperCase()} expires in ${daysUntilExpiry} ${daysUntilExpiry === 1 ? 'day' : 'days'}.`;
+                }
+                addToast(message, 'info');
+                notifiedTradesRef.current.add(trade.id);
+            }
+        }
+    });
+  }, [trades, addToast]);
   
   const filteredTrades = useMemo(() => {
     const { start, end } = dateFilter;

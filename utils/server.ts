@@ -15,6 +15,11 @@ export const getCurrentUser = (): User | null => {
     }
 };
 
+export const register = async (username: string, email: string, password: string): Promise<User> => {
+    await delay(500);
+    return backend.db_register(username, email, password);
+};
+
 export const login = async (username: string, password: string): Promise<User> => {
     await delay(400);
     const user = backend.db_login(username, password);

@@ -25,6 +25,7 @@ const defaultState: Omit<Trade, 'id'> = {
   target: undefined,
   setup: '',
   notes: '',
+  expiryDate: undefined,
 };
 
 // Helper components for form fields
@@ -116,6 +117,9 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onClose, onSubmit, onUpdat
             if (value !== TradeCategory.Option) {
                 updated.optionType = undefined;
                 updated.strikePrice = undefined;
+            }
+            if (value !== TradeCategory.Option && value !== TradeCategory.Future) {
+                updated.expiryDate = undefined;
             }
             if (value === TradeCategory.Cash) {
                 updated.instrument = InstrumentType.Stock;
@@ -222,6 +226,7 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onClose, onSubmit, onUpdat
                         target: { type: Type.NUMBER },
                         setup: { type: Type.STRING },
                         notes: { type: Type.STRING },
+                        expiryDate: { type: Type.STRING },
                     },
                 },
             }
@@ -320,6 +325,9 @@ export const TradeForm: React.FC<TradeFormProps> = ({ onClose, onSubmit, onUpdat
                 {Object.values(OptionType).map(type => <option key={type} value={type}>{type}</option>)}
               </SelectField>
             </>
+        )}
+         {(trade.tradeCategory === TradeCategory.Option || trade.tradeCategory === TradeCategory.Future) && (
+            <InputField label="Expiry Date (Optional)" name="expiryDate" type="date" value={trade.expiryDate} onChange={handleChange} />
         )}
       </div>
 

@@ -6,6 +6,7 @@ import { FullScreenLoader } from '../components/FullScreenLoader';
 interface AuthContextType {
     user: User | null;
     login: (username: string, password: string) => Promise<void>;
+    register: (username: string, email: string, password: string) => Promise<void>;
     logout: () => void;
     isLoading: boolean;
     error: string | null;
@@ -24,7 +25,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             try {
                 const currentUser = api.getCurrentUser();
                 setUser(currentUser);
-                // Seeding is now handled on the backend during login, so no call needed here.
             } catch (err) {
                 console.error("Failed to get current user", err);
             } finally {
@@ -40,7 +40,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         try {
             const loggedInUser = await api.login(username, password);
             setUser(loggedInUser);
-            // Seeding data is now handled on the backend upon login.
         } catch (err: any) {
             setError(err.message || "Login failed.");
             throw err; // Re-throw to be caught in the component
@@ -48,6 +47,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             setIsAuthLoading(false);
         }
     };
+
+    const register = async (username: string, email: string, password: string) => {
+        setIsAuthLoading(true);
+        setError(null);
+        try {
+            await api.register(username, email, password);
+            // Don't set user, force them to log in after registering.
+        } catch (err: any) {
+            setError(err.message || "Registration failed.");
+            throw err; // Re-throw to be caught in the component
+        } finally {
+            setIsAuthLoading(false);
+        }
+    };
+
 
     const logout = async () => {
         try {
@@ -63,7 +77,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isLoading: isAuthLoading, error }}>
+        <AuthContext.Provider value={{ user, login, register, logout, isLoading: isAuthLoading, error }}>
             {children}
         </AuthContext.Provider>
     );

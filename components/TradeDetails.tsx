@@ -83,6 +83,9 @@ export const TradeDetails: React.FC<TradeDetailsProps> = ({ trade }) => {
                 <DetailItem label="Strike Price" value={trade.strikePrice ? `₹${trade.strikePrice.toFixed(2)}` : 'N/A'} />
             </>
         )}
+        {(trade.tradeCategory === TradeCategory.Option || trade.tradeCategory === TradeCategory.Future) && trade.expiryDate && (
+            <DetailItem label="Expiry Date" value={trade.expiryDate} />
+        )}
         <DetailItem label="Direction" value={trade.direction === TradeDirection.Long ? 'Buy' : 'Sell'} />
         <DetailItem label="Size" value={trade.size} />
         <DetailItem label="Entry Price" value={`₹${trade.entryPrice.toFixed(2)}`} />

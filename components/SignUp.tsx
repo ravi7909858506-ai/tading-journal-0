@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { SpinnerIcon, CandleChartIcon, UserIcon, LockIcon, MailIcon } from './icons';
+import { SpinnerIcon, CandleChartIcon, UserIcon, LockIcon, MailIcon, EyeIcon, EyeOffIcon } from './icons';
 import { useToast } from '../contexts/ToastContext';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SignUpProps {
     onSwitchToLogin: () => void;
@@ -8,12 +9,15 @@ interface SignUpProps {
 
 export const SignUp: React.FC<SignUpProps> = ({ onSwitchToLogin }) => {
     const { addToast } = useToast();
+    const { register } = useAuth();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -24,15 +28,15 @@ export const SignUp: React.FC<SignUpProps> = ({ onSwitchToLogin }) => {
         setIsLoading(true);
         setError(null);
         
-        // Simulate API call for registration
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        // In a real application, you would call an API to register the user.
-        // For this demo, we'll show a success message and switch to the login view.
-        
-        setIsLoading(false);
-        addToast(`Welcome, ${username}! Please sign in to continue.`, 'success');
-        onSwitchToLogin();
+        try {
+            await register(username, email, password);
+            addToast(`Welcome, ${username}! Please sign in to continue.`, 'success');
+            onSwitchToLogin();
+        } catch (err: any) {
+            setError(err.message || "Failed to register.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -93,14 +97,24 @@ export const SignUp: React.FC<SignUpProps> = ({ onSwitchToLogin }) => {
                                 <input
                                     id="password-signup"
                                     name="password"
-                                    type="password"
+                                    type={isPasswordVisible ? 'text' : 'password'}
                                     autoComplete="new-password"
                                     required
-                                    className="appearance-none relative block w-full pl-10 pr-3 py-2.5 border border-[var(--border-primary)] bg-[var(--surface-secondary)] text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/70 focus:border-indigo-500 focus:z-10 sm:text-sm rounded-md"
+                                    className="appearance-none relative block w-full pl-10 pr-10 py-2.5 border border-[var(--border-primary)] bg-[var(--surface-secondary)] text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/70 focus:border-indigo-500 focus:z-10 sm:text-sm rounded-md"
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                                        className="text-slate-400 hover:text-slate-200 focus:outline-none"
+                                        aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                                    >
+                                        {isPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -112,14 +126,24 @@ export const SignUp: React.FC<SignUpProps> = ({ onSwitchToLogin }) => {
                                 <input
                                     id="confirm-password-signup"
                                     name="confirmPassword"
-                                    type="password"
+                                    type={isConfirmPasswordVisible ? 'text' : 'password'}
                                     autoComplete="new-password"
                                     required
-                                    className="appearance-none relative block w-full pl-10 pr-3 py-2.5 border border-[var(--border-primary)] bg-[var(--surface-secondary)] text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/70 focus:border-indigo-500 focus:z-10 sm:text-sm rounded-md"
+                                    className="appearance-none relative block w-full pl-10 pr-10 py-2.5 border border-[var(--border-primary)] bg-[var(--surface-secondary)] text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/70 focus:border-indigo-500 focus:z-10 sm:text-sm rounded-md"
                                     placeholder="Confirm Password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                 />
+                                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                                        className="text-slate-400 hover:text-slate-200 focus:outline-none"
+                                        aria-label={isConfirmPasswordVisible ? "Hide password" : "Show password"}
+                                    >
+                                        {isConfirmPasswordVisible ? <EyeOffIcon /> : <EyeIcon />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
