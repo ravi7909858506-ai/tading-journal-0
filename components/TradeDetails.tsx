@@ -68,6 +68,7 @@ export const TradeDetails: React.FC<TradeDetailsProps> = ({ trade }) => {
         <DetailItem label="Gross P&L" value={`₹${grossPnl.toFixed(2)}`} />
         <DetailItem label="Brokerage & Charges" value={`- ₹${brokerageInfo.totalCharges.toFixed(2)}`} className="text-red-400" />
         <DetailItem label="Ticker" value={trade.ticker.toUpperCase()} />
+        <DetailItem label="Trade ID" value={trade.id} className="text-xs text-slate-500 font-mono" />
         <DetailItem label="Date" value={trade.date} />
         <DetailItem label="Instrument" value={trade.instrument} />
         {trade.instrument === InstrumentType.Index && trade.marketIndex && (
